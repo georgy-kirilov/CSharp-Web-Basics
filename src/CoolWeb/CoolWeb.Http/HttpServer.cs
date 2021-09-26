@@ -10,6 +10,8 @@
 
     public class HttpServer
     {
+        private readonly Dictionary<Route, Action<HttpRequest, HttpResponse>> routingTable = new();
+
         private static readonly IPAddress Localhost = IPAddress.Loopback;
         private const int DefaultPort = 9999;
         private const int BufferSize = 1024;
@@ -27,6 +29,18 @@
         }
 
         public int Port { get; }
+
+        public void AddRoute(HttpMethod method, string path, Action<HttpRequest, HttpResponse> action = null)
+        {
+            var route = new Route(method, path);
+
+            if (this.routingTable.ContainsKey(route))
+            {
+                throw new InvalidOperationException($"{nameof(Route)} with such value already exists");
+            }
+
+            this.routingTable.Add(route, action);
+        }
 
         public async Task StartAsync()
         {
@@ -62,10 +76,28 @@
                     }
                 }
 
-                string request = Encoding.UTF8.GetString(bytesRead.ToArray());
+                string requestAsString = Encoding.UTF8.GetString(bytesRead.ToArray());
 
-                string content = "<h1>Hello World</h1><p>This is Cool Web Server speaking</p>";
-                var response = new HttpResponse(content, ContentTypes.Html);
+                var request = new HttpRequest(requestAsString);
+                var response = new HttpResponse();
+
+                var route = new Route(request.Method, request.Path);
+
+                if (this.routingTable.ContainsKey(route))
+                {
+                    try
+                    {
+                        this.routingTable[route].Invoke(request, response);
+                    }
+                    catch (Exception)
+                    {
+                        response.StatusCode = HttpStatusCode.InternalServerError;
+                    }
+                }
+                else
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                }
 
                 await stream.WriteAsync(response.ToByteArray());
             }

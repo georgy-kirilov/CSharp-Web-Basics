@@ -6,8 +6,8 @@
     {
         public HttpRequest(string rawRequest)
         {
-            this.Headers = new HeaderCollection();
-
+            Console.WriteLine(rawRequest);
+            this.Headers = new();
             var lines = rawRequest.Split(HttpConstants.NewLine);
             var arguments = lines[0].Split(" ");
 
@@ -25,6 +25,7 @@
                 }
 
                 var headerArguments = line.Split(": ");
+                Console.WriteLine(headerArguments.Length);
                 string key = headerArguments[0], value = headerArguments[1];
 
                 switch (key?.ToLower())
@@ -49,7 +50,7 @@
         public string Version { get; }
 
         public HttpMethod Method { get; set; }
-        
+
         public string ContentType { get; set; }
 
         public int ContentLength { get; set; }

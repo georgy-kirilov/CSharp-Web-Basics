@@ -6,25 +6,16 @@
 
     public class HttpResponse
     {
-        public HttpResponse(string content, string contentType = ContentTypes.Text) 
-            : this(Encoding.UTF8.GetBytes(content), contentType)
-        {
-
-        }
-
-        public HttpResponse(byte[] content, string contentType = ContentTypes.Text) 
-            : this(HttpStatusCode.Ok, content, contentType, HttpConstants.Version, HttpConstants.Server)
-        {
-        }
-
-        public HttpResponse(HttpStatusCode statusCode, byte[] content, string contentType, string version, string server)
+        public HttpResponse(HttpStatusCode statusCode = HttpStatusCode.Ok, string contentType = ContentTypes.Text)
         {
             this.Headers = new();
+            this.Content = Array.Empty<byte>();
+
             this.StatusCode = statusCode;
-            this.Content = content;
             this.ContentType = contentType;
-            this.Version = version;
-            this.Server = server;
+
+            this.Server = HttpConstants.Server;
+            this.Version = HttpConstants.Version;
         }
 
         public HttpStatusCode StatusCode { get; set; }
@@ -39,12 +30,16 @@
 
         public HeaderCollection Headers { get; }
 
+        private int BodyBytesCount => this.Content?.Length ?? 0;
+
         public byte[] ToByteArray()
         {
             var headersBytes = Encoding.UTF8.GetBytes(this.ToString());
-            var bytes = new byte[headersBytes.Length + this.Content.Length];
+            var bytes = new byte[headersBytes.Length + this.BodyBytesCount];
+
             Array.Copy(headersBytes, bytes, headersBytes.Length);
-            Array.Copy(this.Content, sourceIndex: 0, bytes, headersBytes.Length, this.Content.Length);
+            Array.Copy(this.Content, sourceIndex: 0, bytes, headersBytes.Length, this.BodyBytesCount);
+
             return bytes;
         }
 
@@ -52,11 +47,11 @@
         {
             var builder = new HttpStringBuilder();
 
-            var mandatoryHeaders = new KeyValuePair<string, object>[]
+            KeyValuePair<string, object>[] mandatoryHeaders = new KeyValuePair<string, object>[]
             {
                 new("Server", this.Server),
                 new("Content-Type", this.ContentType),
-                new("Content-Length", this.Content.Length),
+                new("Content-Length", this.BodyBytesCount),
                 new("Date", DateTime.UtcNow.ToString("R")),
                 new("Connection", "Keep-Alive"),
             };
