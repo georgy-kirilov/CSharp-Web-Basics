@@ -9,38 +9,31 @@
         public HttpResponse(HttpStatusCode statusCode = HttpStatusCode.Ok, string contentType = ContentTypes.Text)
         {
             this.Headers = new();
-            this.Content = Array.Empty<byte>();
+            this.Body = Array.Empty<byte>();
 
             this.StatusCode = statusCode;
             this.ContentType = contentType;
-
-            this.Server = HttpConstants.Server;
-            this.Version = HttpConstants.Version;
         }
 
         public HttpStatusCode StatusCode { get; set; }
 
         public string ContentType { get; set; }
 
-        public string Version { get; set; }
-
-        public string Server { get; set; }
-
-        public byte[] Content { get; set; }
+        public byte[] Body { get; set; }
 
         public HeaderCollection Headers { get; }
 
-        private int BodyBytesCount => this.Content?.Length ?? 0;
+        private int BodyBytesCount => this.Body?.Length ?? 0;
 
         public byte[] ToByteArray()
         {
             var headersBytes = Encoding.UTF8.GetBytes(this.ToString());
-            var bytes = new byte[headersBytes.Length + this.BodyBytesCount];
+            var responseBytes = new byte[headersBytes.Length + this.BodyBytesCount];
 
-            Array.Copy(headersBytes, bytes, headersBytes.Length);
-            Array.Copy(this.Content, sourceIndex: 0, bytes, headersBytes.Length, this.BodyBytesCount);
+            Array.Copy(headersBytes, responseBytes, headersBytes.Length);
+            Array.Copy(this.Body, sourceIndex: 0, responseBytes, headersBytes.Length, this.BodyBytesCount);
 
-            return bytes;
+            return responseBytes;
         }
 
         public override string ToString()
@@ -49,7 +42,7 @@
 
             KeyValuePair<string, object>[] mandatoryHeaders = new KeyValuePair<string, object>[]
             {
-                new("Server", this.Server),
+                new("Server", HttpConstants.Server),
                 new("Content-Type", this.ContentType),
                 new("Content-Length", this.BodyBytesCount),
                 new("Date", DateTime.UtcNow.ToString("R")),
@@ -63,9 +56,9 @@
 
             int statusCodeNumber = (int) this.StatusCode;
 
-            builder.AppendLine($"{this.Version} {statusCodeNumber} {this.StatusCode.Message()}");
+            builder.AppendLine($"{HttpConstants.Version} {statusCodeNumber} {this.StatusCode.Message()}");
 
-            foreach (var header in mandatoryHeaders)
+            foreach (var header in this.Headers)
             {
                 builder.AppendLine($"{header.Key}: {header.Value}");
             }

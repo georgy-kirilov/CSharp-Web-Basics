@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolWeb.Sandbox", "CoolWeb.Sandbox\CoolWeb.Sandbox.csproj", "{BC41B7B9-9DD6-4E15-A509-7C37187A8D9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoolWeb.Sandbox", "CoolWeb.Sandbox\CoolWeb.Sandbox.csproj", "{BC41B7B9-9DD6-4E15-A509-7C37187A8D9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolWeb.Http", "CoolWeb.Http\CoolWeb.Http.csproj", "{A26CAF9C-341C-4030-B49E-97A66FD638D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoolWeb.Http", "CoolWeb.Http\CoolWeb.Http.csproj", "{A26CAF9C-341C-4030-B49E-97A66FD638D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolWeb.Mvc", "CoolWeb.Mvc\CoolWeb.Mvc.csproj", "{CD1E7F40-A66C-4E3B-A2B3-CB1170A24B9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A26CAF9C-341C-4030-B49E-97A66FD638D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A26CAF9C-341C-4030-B49E-97A66FD638D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A26CAF9C-341C-4030-B49E-97A66FD638D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1E7F40-A66C-4E3B-A2B3-CB1170A24B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1E7F40-A66C-4E3B-A2B3-CB1170A24B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1E7F40-A66C-4E3B-A2B3-CB1170A24B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1E7F40-A66C-4E3B-A2B3-CB1170A24B9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

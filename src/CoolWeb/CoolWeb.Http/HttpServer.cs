@@ -83,6 +83,17 @@
 
                 var route = new Route(request.Method, request.Path);
 
+                var sessionCookie = request.SessionCookie ?? Guid.NewGuid().ToString();
+
+                var responseSessionCookie = 
+                    new ResponseCookie(HttpConstants.SessionCookieName, sessionCookie)
+                    {
+                        MaxAge = 9000
+                    }
+                    .CreateHeader();
+
+                response.Headers.Add(responseSessionCookie.Key, responseSessionCookie.Value);
+
                 if (this.routingTable.ContainsKey(route))
                 {
                     try
@@ -98,8 +109,8 @@
                 {
                     response.StatusCode = HttpStatusCode.NotFound;
                 }
-
                 await stream.WriteAsync(response.ToByteArray());
+                Console.WriteLine(response.ToString());
             }
         }
     }
